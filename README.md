@@ -2,7 +2,7 @@
 parser generator
 gills is parser generator.
 Core component is parser.[ch] files which is to be linked with application as library.
-it's by default multi-threading enabled.
+It's by default multi-threading enabled.
 
 Code flow is 
 
@@ -14,7 +14,7 @@ int read_parse (gills_context_t *gills,
                 char **tkprec, int tkprec_num)
 
 
-it will initialise parsing instance on gills_context_t which is to be passed further down the parsing calls. Every parsing tree will have its own context.
+It will initialise parsing instance on gills_context_t which is to be passed further down the parsing calls. Every parsing tree will have its own context.
 
 Next call parse() will start parsing.
 
