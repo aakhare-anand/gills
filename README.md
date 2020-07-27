@@ -1,10 +1,23 @@
-# gills
-parser generator
-gills is parser generator.
-Core component is parser.[ch] files which is to be linked with application as library.
+Gills is GLR parser generator.
+Core component is gills.[ch] files which is to be linked with application as library.
 It's by default multi-threading enabled.
+To try it out, download all code in a directory and compile with following command:
+cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c
+cc is C compiler.
+Create a file named "data" and populate it with arithmetric expression for calculator.
+eg is 1+2-3*4/5*6
+Don't leave any whitespace characters.
+Then just run ./gills 
+It will read data file and parse it and exit.
+gills.[ch], gillsfileop.[ch] are used for parsing and testdata and testtokens and test
+can be replaced with application files.
+gills_app.h file has to be populated with data type of yylval of tokens given by scanners.
+Parsing synax is populated through writing data structure token_read_t(Refer testdata.c file)
+gills_tool is in development to automatically generate this data structure from yacc/bison compatible
+syntax (.y) files.
 
-Code flow is 
+
+Code flow for using parser is given below (Same can be understood by referring test.c file) : 
 
 read_parse() call which will read the parsing data in the form of array of token_read_t and generate and soak in parsing grammar.
 int read_parse (gills_context_t *gills,
