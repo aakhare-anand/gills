@@ -96,7 +96,7 @@ Action function will be executed when a nonterminal is resolved and at that poin
 Last token number is always zero unless it is changed here by last_tk_num.
 
 
-Scanning files are scanner.c and scanner.h which is simple scanner implemented (simplex).
+Scanning files are simplex.c and simplex.h which is simple scanner implemented (simplex).
 
 Sample calculator and some combinations of parsing logic are provided for token_read_t as tkr arrays in tokendata.c file.
 One can be kept and rest can be commented out to validate logic.
