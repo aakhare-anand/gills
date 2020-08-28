@@ -101,3 +101,5 @@ Scanning files are simplex.c and simplex.h which is simple scanner implemented (
 Sample calculator and some combinations of parsing logic are provided for token_read_t as tkr arrays in tokendata.c file.
 One can be kept and rest can be commented out to validate logic.
 Depending on which tkr is active, respective input data file has to be created as text file with name "data". 
+About gills.[ch] code:
+    Initial commit is for check-in and keeping track of all code flows. In further commits code cleanup will be done
