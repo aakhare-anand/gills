@@ -2,8 +2,11 @@ Gills is GLR parser generator.
 Core component is gills.[ch] files which is to be linked with application as library.
 It's by default multi-threading enabled.
 To try it out, download all code in a directory and compile with following command:
+
 cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c
+
 cc is C compiler.
+
 Create a file named "data" and populate it with arithmetric expression for calculator.
 eg is 1+2-3*4/5*6
 Don't leave any whitespace characters.
