@@ -4,7 +4,7 @@
 gills_context_t* gills_create_def(void *yylval, void *yyscan);
 void init_gills_params(gills_context_t *gills,
                        int init_pstack_max_num,
-                       int init_pstackidx_max_num,
+//                       int init_pstackidx_max_num,
                        int init_tkstack_max_num,
                        int init_listnodearr_max_num,
                        int init_scan_funcs_max_num,

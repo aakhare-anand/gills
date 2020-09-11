@@ -220,8 +220,8 @@ typedef struct gills_context_ {
     parse_node_t **pstack;
     int pstack_idx;
     int pstack_max_num;
-    int *pstackidx_stack;
-    int pstackidx_top;
+//    int *pstackidx_stack;
+//    int pstackidx_top;
     int pstackidx_max_num;
     list_t **tkstack;
     list_t *prevop_tkstack_lnode;

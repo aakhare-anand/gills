@@ -686,7 +686,7 @@ gills_context_t* gills_create_def (void *yylval, void *yyscan)
     gills->last_tk_num = LAST_TOKEN_DEF_NUM;
     gills->empty_tk_num = EMPTY_TOKEN_DEF_NUM;
     gills->pstack_max_num = PSTACK_MAX_DEF_NUM;
-    gills->pstackidx_max_num = PSTACK_IDX_MAX_DEF_NUM;
+//    gills->pstackidx_max_num = PSTACK_IDX_MAX_DEF_NUM;
     gills->tkstack_max_num = TKSTACK_MAX_DEF_NUM;
     gills->listnodearr_max_num = LIST_NODES_DEF_NUM;
     gills->scan_funcs_max_num = SCAN_FUNCS_MAX_DEF_NUM;
@@ -695,7 +695,7 @@ gills_context_t* gills_create_def (void *yylval, void *yyscan)
 
 void init_gills_params (gills_context_t *gills,
                        int init_pstack_max_num,
-                       int init_pstackidx_max_num,
+//                       int init_pstackidx_max_num,
                        int init_tkstack_max_num,
                        int init_listnodearr_max_num,
                        int init_scan_funcs_max_num,
@@ -704,7 +704,7 @@ void init_gills_params (gills_context_t *gills,
                        int init_last_tk_num)
 {
     gills->pstack_max_num = init_pstack_max_num;
-    gills->pstackidx_max_num = init_pstackidx_max_num;
+//    gills->pstackidx_max_num = init_pstackidx_max_num;
     gills->tkstack_max_num = init_tkstack_max_num;
     gills->listnodearr_max_num = init_listnodearr_max_num;
     gills->scan_funcs_max_num = init_scan_funcs_max_num;
@@ -722,7 +722,7 @@ int init_gills_alloc (gills_context_t *gills)
     gills->toppnode = NULL;
     gills->pstack_idx = -1;
     gills->tkstack_idx = 0;
-    gills->pstackidx_top = -1;
+//    gills->pstackidx_top = -1;
     gills->listnodearr_idx = 0;
     gills->scan_funcs_max_idx = -1;
     gills->scan_active_idx = 0;
@@ -735,7 +735,7 @@ int init_gills_alloc (gills_context_t *gills)
 //    gills->listnodearr = (list_t *)calloc(gills->listnodearr_max_num, sizeof(list_t));
     gills->pnodeptrs = (parse_node_t **)calloc(gills->pnode_max_num, sizeof(parse_node_t *));
 //    gills->pstack = (parse_node_t **)calloc(gills->pstack_max_num, sizeof(parse_node_t *));
-    gills->pstackidx_stack = (int *)calloc(gills->pnode_max_num, sizeof(int));
+//    gills->pstackidx_stack = (int *)calloc(gills->pnode_max_num, sizeof(int));
     gills->tkstack = (list_t **)calloc(gills->tkstack_max_num, sizeof(list_t));
  //   memset(&(gills->top_rule_node), 0, sizeof(rule_node_t));
  //   memset(&(gills->top_last_exp_pnode), 0, sizeof(parse_node_t));
@@ -770,11 +770,11 @@ void gills_cleanup (gills_context_t *gills)
 {
 //    free(gills->pnodemem);
 //    free(gills->listnodearr);
-//    free(gills->pnodeptrs);
+    free(gills->pnodeptrs);
     free(gills->pstack);
 //    free(gills->pstackidx_stack);
-//    free(gills->tkstack);
-//    free(gills->scan_funcs);
+    free(gills->tkstack);
+    free(gills->scan_funcs);
     free(gills->scan_funcs_val);
     free(gills->scan_val_size);
     free(gills->pnodemem);
@@ -966,7 +966,61 @@ int generate_parse (gills_context_t *gills,
                  }    
                 fpnode = fpnode->rl_prev;
             }
+#if 0
+        if (rlnode->num != rlnode->rule->rule_nodes_num - 1) {
 
+            nxtrlnode = &(rlnode->rule->rule_nodes[rlnode->num + 1]);
+            tnode = nxtrlnode->token;
+            break;
+        } else {
+            fpnode1 = fpnode;
+
+            rule = fpnode->rule_node->rule;
+            while (fpnode->rl_prev) {
+                 if (fpnode->recurup) {
+                     if (!fpnode->rl_prev) {
+                         if (fpnode->up->dn && fpnode->up->dn != fpnode) {
+                             printf("ambiguity ...exiting\n");
+                             exit_parse(gills, -1);
+                         } else if (!fpnode->up->dn) {
+                               break;
+//                             goto upreducelabel;
+                         }
+                     } else if (fpnode->rl_prev) {
+                         if (fpnode->rl_prev->rl_next &&
+                             fpnode->rl_prev->rl_next != fpnode) {
+                             printf("ambiguity ...exiting\n");
+                             exit_parse(gills, -1);
+                         } else if (!fpnode->rl_prev->res) {
+                             
+                     }
+ //                    uprecpnode = fpnode->rl_prev;
+ //                    up_recur_list = uprecpnode->up_recur_list;
+                     up_recur_list = fpnode->up_recur_list;
+                     if (up_recur_list) {
+                     recuppnode = ((parse_node_t *)
+                                  (up_recur_list->next->data))->recup_pnode;
+                     if ((recuppnode->recdn_pnode) /* &&
+                         (recuppnode->recdn_pnode->parserec_llnode ==
+                         up_recur_list) */ ) {
+                         printf("ambiguity rule node "
+                                "%s and %s ...exiting\n",
+                                 recuppnode->token->token_name,
+                                 uprecpnode->token->token_name);
+                         exit_parse(gills, -1);
+                     }
+                     } // {
+                         if (!fpnode->rl_prev->rl_next) {
+                         fpnode->rl_prev->rec_prevup_list = list_del_node(
+                                          fpnode->rl_prev->rec_prevup_list,
+                                          fpnode->recprevup_lnode);
+                        fpnode->rl_prev->rl_next = fpnode;
+                        }
+ //                    }
+                 }    
+                fpnode = fpnode->rl_prev;
+            }
+#endif
 /*
            if (rule->int_recur) {
                action_ex(fpnode->up
@@ -1031,6 +1085,8 @@ int generate_parse (gills_context_t *gills,
 //               }
            }
 */
+//        if (floating && rule == start_pnode->rule) {
+            
         if ( /* updir && !floating  && */ fpnode->rule->token->crecur &&
            (!fpnode->crecur && fpnode1->right_recur)) {
             updir = 0;
@@ -1074,8 +1130,10 @@ int generate_parse (gills_context_t *gills,
 //            break;
         }
 
+/*
            if (floating && rule->crecur)
                goto upreducelabel;
+*/
            if (/* !rule->int_recur && */ rule->crecur &&
                !rule->right_recur) {
                pnode = fpnode;
@@ -1308,14 +1366,16 @@ pnoderuleslabel:
     }
 */
     if (pnode->token->rules_num) {
-        gills->pstackidx_top += 1;
+//        gills->pstackidx_top += 1;
+/*
         if (gills->pstackidx_top > gills->pstackidx_max_num) {
             printf("parse node stack idx memory %d exhausted ...exiting\n",
                    gills->pstackidx_max_num);
             exit(-1);
         }
+*/
 //        gills->pstack_idx += 1;
-        gills->pstackidx_stack[gills->pstackidx_top] = gills->pstack_idx;
+//        gills->pstackidx_stack[gills->pstackidx_top] = gills->pstack_idx;
         gills->pstack_idx += 1;
         gills->pstack[gills->pstack_idx] = pnode;
     } else {
@@ -1454,8 +1514,11 @@ pnoderuleslabel:
         }
         }
      }
+/*
         if (gills->pstack_idx ==
             gills->pstackidx_stack[gills->pstackidx_top])
+*/
+        if (gills->pstack_idx == -1)
             break;
      }
 crecurgenlabel:
@@ -1588,10 +1651,11 @@ crecurgenlabel:
 //                         exit_parse(gills, -1);
                      }
 //                 }
+/*
                    if (recnxtpnode) {
                        fpnode->recur_fl_lasttk_pnode = recnxtpnode;
                    }
-
+*/
                     up_precur_list = NULL;
                     if (lretpnode->token->token_num ==
                          gills->top_token->token_num)
@@ -1607,7 +1671,7 @@ crecurgenlabel:
             }
 //    }
 //    *retpnode = retpnode;
-    gills->pstackidx_top -= 1;
+//    gills->pstackidx_top -= 1;
     return 0;
 }
 
