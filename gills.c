@@ -17,7 +17,7 @@ void parse_set_rule_assoc_prec_last_term(gills_context_t *gills,
 void parse_set_rule_assoc_prec(gills_context_t *gills,
                                 parse_node_t *pnode);
 parse_node_t* get_pnode(gills_context_t *gills);
-void free_uprecurlist(parse_node_t *pnode);
+// void free_uprecurlist(parse_node_t *pnode);
 void free_pnode(gills_context_t *gills, parse_node_t *pnode);
 void reset_pnode_mem(gills_context_t *gills);
 int generate_parse(gills_context_t *gills,
@@ -37,7 +37,7 @@ void change_parsereclist_recup_pnode(list_t *parse_reclist,
 void action_ex_inline(gills_context_t *gills,
                        parse_node_t *tkpnode,
                        parse_node_t *crecur_begin_pnode);
-void set_uppnode_recur_list(list_t *rec_list, list_t *up_list, int recur_up_top);
+// void set_uppnode_recur_list(list_t *rec_list, list_t *up_list, int recur_up_top);
 void free_parsereclist_lnode(parse_node_t *pnode);
 void free_parse_rule(gills_context_t *gills, parse_node_t *tkpnode);
 void free_recur_list(gills_context_t *gills, parse_node_t *pnode);
@@ -407,6 +407,7 @@ parse_node_t* get_pnode (gills_context_t *gills)
     }
 }
 
+#if 0
 void free_uprecurlist (parse_node_t *pnode)
 {
     list_t *upreclist = pnode->up_recur_list, *parsereclist, *parsereclist1, *recuplist;
@@ -441,6 +442,7 @@ void free_uprecurlist (parse_node_t *pnode)
         recpnode->recur_up_list = NULL;
     }
 }
+#endif
 
 void free_pnode (gills_context_t *gills, parse_node_t *pnode)
 {
@@ -474,9 +476,11 @@ void free_pnode (gills_context_t *gills, parse_node_t *pnode)
         }
 */
      }
+#if 0
      if (pnode->up_recur_list /* || pnode->recur_up_list */ ) {
          free_uprecurlist(pnode);
      }
+#endif
 /*
         parsereclist = pnode->upparse_rec_list;
         uppreclist_lnode = pnode->uppreclist_lnode;
@@ -933,6 +937,7 @@ int generate_parse (gills_context_t *gills,
 
             rule = fpnode->rule_node->rule;
             while (fpnode->rl_prev) {
+#if 0
                  if (fpnode->recurup) {
                      if (fpnode->rl_prev &&
                          fpnode->rl_prev->rl_next &&
@@ -964,6 +969,7 @@ int generate_parse (gills_context_t *gills,
                         }
  //                    }
                  }    
+#endif
                 fpnode = fpnode->rl_prev;
             }
 #if 0
@@ -1108,6 +1114,7 @@ int generate_parse (gills_context_t *gills,
                     return CREC_AMBIGUOUS;
 //                    exit_parse(gills, -1);
                 }
+#if 0
                 if (fpnode->recur_up_list) {
                     recupfl_pnode = (parse_node_t *)(fpnode->recur_up_list->next->data);
                     if (recupfl_pnode->res) {
@@ -1118,6 +1125,7 @@ int generate_parse (gills_context_t *gills,
                         exit_parse(gills, -1);
                     }
                 }
+#endif
                 free_parsereclist_lnode(fpnode);
 //                fpnode->recup_pnode->recres_pnode = fpnode;
                 fpnode->recup_pnode->recdn_pnode = fpnode;
@@ -1325,17 +1333,22 @@ upreducelabel:
 //    gills->pstackidx_top += 1;
     if (fpnode) {
         if (!floating) {
+#if 0
             fpnode->uprecur = 0;
             pnode->recurup = 0;
+#endif
             fpnode->rl_next = pnode;
             pnode->rl_prev = fpnode;
-        } else {
+        }
+#if 0
+ else {
             fpnode->uprecur = 1;
             pnode->recurup = 1;
             fpnode->rec_prevup_list = list_add(gills, fpnode->rec_prevup_list, pnode, &lnode);
             pnode->rl_prev = fpnode;
             pnode->recprevup_lnode = lnode;
         }
+#endif
     }
 //    gills->pstackidx_stack[gills->pstackidx_top] = gills->pstack_idx;
     pnode->token = tnode;
@@ -1656,7 +1669,10 @@ crecurgenlabel:
                        fpnode->recur_fl_lasttk_pnode = recnxtpnode;
                    }
 */
+#if 0
                     up_precur_list = NULL;
+#endif
+#if 0
                     if (lretpnode->token->token_num ==
                          gills->top_token->token_num)
                         recur_up_top = 1;
@@ -1667,6 +1683,7 @@ crecurgenlabel:
                     set_uppnode_recur_list( /* pnode->parse_reclist */ parselistnode, up_precur_list,
                                            recur_up_top);
                 }
+#endif
                     }
             }
 //    }
@@ -2031,9 +2048,11 @@ action_loop_start:
                   rlpnode->recact))) {
                  fpnode = rlpnode;
                  while (1) {
+#if 0
                      if (rlpnode->uprecur &&
                          !rlpnode->rl_next)
                          return;
+#endif
                      if (rlpnode->rl_next) {
                          if(rlpnode->nonterm) {
                              rlpnode = rlpnode->rl_next;
@@ -2063,11 +2082,13 @@ action_loop_start:
                  if (rlnextflag) {
 //                     rlpnode = rlpnode->rl_next;
                      pnode = rlpnode;
+#if 0
                  if (rlpnode->rec_prevup_list ||
                      rlpnode->up_recur_list ||
                      (rlpnode->recur_up_list &&
                       !rlpnode->recur_up_top))
                      return;
+#endif
 
                      if (pnode->nonterm) {
                          rlpnode = pnode;
@@ -2075,11 +2096,13 @@ action_loop_start:
                              if (!rlpnode->dnres_pnode ||
                                   rlpnode->dn)
                                  return;
+#if 0
                  if (rlpnode->rec_prevup_list ||
                      rlpnode->up_recur_list ||
                      (rlpnode->recur_up_list &&
                       !rlpnode->recur_up_top))
                      return;
+#endif
 
                              rlpnode = rlpnode->dnres_pnode;
                              if (!rlpnode->nonterm) {
@@ -2172,11 +2195,13 @@ action_loop_start:
                      goto action_loop_start;
                  }
              }
+#if 0
                  if (rlpnode->rec_prevup_list ||
                      rlpnode->up_recur_list ||
                      (rlpnode->recur_up_list &&
                       !rlpnode->recur_up_top))
                      return;
+#endif
 /*
              if (!rlpnode->crecur) {
                  if (rlpnode->rl_next &&
@@ -3022,6 +3047,7 @@ action_crecur_loop_start:
     }
 //}
 
+#if 0
 void set_uppnode_recur_list (list_t *rec_list, list_t *up_list, int recur_up_top)
 {
     parse_node_t *recpnode, *uppnode;
@@ -3058,6 +3084,7 @@ void set_uppnode_recur_list (list_t *rec_list, list_t *up_list, int recur_up_top
     up_recur = 1;
     }
 }
+#endif
 
 /*
 int check_recur_up_ambiguity (parse_node_t *pnode)
@@ -3559,6 +3586,7 @@ void free_parsereclist_lnode (parse_node_t *pnode)
  //       pnode->parserec_llnode = NULL;
 //        pnode->parserec_lnode = NULL;
         pnode->parserec_llnode = NULL;
+#if 0
         if (pnode->recur_up_list) {
             uprecurpnode = (parse_node_t *)(pnode->recur_up_list->next->data);
             if (uprecurpnode->up_recur_list) {
@@ -3568,6 +3596,7 @@ void free_parsereclist_lnode (parse_node_t *pnode)
             free_list(pnode->recur_up_list);
             pnode->recur_up_list = NULL;
         }
+#endif
     }
 /* 
     up_pnode->parse_reclist = 
@@ -3776,8 +3805,10 @@ crecurfreelabel:
                     pnode->uprecur_pnode->recur_fl_lasttk_pnode)
                     fpnode->recur_free = 1;
 */
+#if 0
                 recur_up_top = pnode->recur_up_top;
                 recuruplist = pnode->recur_up_list; /* ? pnode->recur_up_list->next : NULL; */
+#endif
 /*
                 if (pnode->recur_up_list) {
                     uprecurpnode = (parse_node_t *)(pnode->recur_up_list->next->data);
@@ -3789,6 +3820,7 @@ crecurfreelabel:
                 free_pnode(gills, pnode);
                 pnode = fpnode;
                 
+#if 0
                 if (!recpnode_pass && recuruplist/* !fpnode->recur_free */) {
                     if (pnode->parse_reclist)
                         return;
@@ -3822,6 +3854,8 @@ crecurfreelabel:
                         return;
                     }
                  } else if (recpnode_pass || (!recuruplist && !recur_up_top)) {
+#endif
+                 if (recpnode_pass) { // || (!recuruplist && !recur_up_top)) {
  //                      pnode = fpnode;
  //                      pnode->recur_free = 1;
                        if (pnode->parse_reclist)
@@ -4046,6 +4080,7 @@ rlprevfreelabel:
                         goto crecurfreelabel;
                     }
 */
+#if 0
                     if (prevpnode->uprecur) {
                         if (prevpnode->rec_prevup_list) {
                             return;
@@ -4138,6 +4173,7 @@ rlprevfreelabel:
 */
                          }
                     }
+#endif
 #if 0
                     if (prevpnode->recur ||
                         prevpnode->int_recur ||
