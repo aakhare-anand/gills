@@ -30,8 +30,9 @@
 #define MAKE_SCAN_FUNC_IDX 1
 #define SCAN_FUNCS_MAX_DEF_NUM 2
 
-#define REDUCE_ACTION_INLINE 0
+#define REDUCE_ACTION_INLINE 1
 #define TOKEN_MEM_INTERNAL   1
+#define GILLS_FAST           1
 
 #define LAST_TOKEN_DEF_NUM        EOF
 #define EMPTY_TOKEN_DEF_NUM       1
@@ -156,6 +157,8 @@ typedef struct parse_node_ {
     list_t *recur_list;
     struct parse_node_ *rl_next;
     struct parse_node_ *rl_prev;
+    int rule_start;
+    int rule_end;
     list_t *dn;
     list_t *updn_lnode;
     struct parse_node_ *up;

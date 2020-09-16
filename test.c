@@ -4,6 +4,7 @@
 #include "simplex.h"
 #include "testtokens.h"
 #include "testdata.h"
+#include <time.h>
 
 // char scan_file_buf[64000];
 extern char *prep_buffer;
@@ -17,6 +18,7 @@ int main ()
     simplex_t *simplex;
     gills_fread_t *gf;
     char *datafile = "data";
+    struct timespec timespecstart, timespecend;
 
 //    gf = gills_fileropen(datafile, GILLS_FREAD_BUF_DEF_SIZE, GILLS_FREAD_MIN_DEF_SIZE);
     gf = gills_fileropen(datafile, 64, 8);
@@ -59,12 +61,26 @@ int main ()
         exit_parse(gills, -1);
     }
  //   gills = init_gills_parse();
+    ret = clock_gettime(CLOCK_REALTIME, &timespecstart);
+    if (ret) {
+        perror("clock_gettime failed: ");
+        exit(-1);
+    }
     ret = parse(gills, gills->top_token);
     printf("pnodemem_idx %d\npnodeptrs_end %d \n", gills->pnodemem_idx, gills->pnodeptrs_end);
     if (ret) {
         printf("parse failed ...exiting\n");
         exit_parse(gills, -1);
     }
+    ret = clock_gettime(CLOCK_REALTIME, &timespecend);
+    if (ret) {
+        perror("clock_gettime end failed: ");
+        exit(-1);
+    }
+    printf("\nstart timespec : %d %d \n", timespecstart.tv_sec, timespecstart.tv_nsec);
+    printf("end timespec : %d %d \n", timespecend.tv_sec, timespecend.tv_nsec);
+    printf("diff : %d sec %d nsec\n", timespecend.tv_sec - timespecstart.tv_sec,
+            timespecend.tv_nsec - timespecstart.tv_nsec);
     simplex_cleanup(simplex);
     gills_frclose(gf);
     gills_cleanup(gills);
