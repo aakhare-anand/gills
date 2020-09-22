@@ -3,8 +3,13 @@
 
 list_t* list_add(gills_context_t *gills, list_t *list, void *data, list_t **listnode);
 void free_list(list_t *list);
-list_t* list_del_node (list_t *list, list_t *node);
-list_t* list_del_head (list_t *list);
+list_t* list_del_node (gills_context_t *gills, list_t *list, list_t *node);
+list_t* list_del_head (gills_context_t *gills, list_t *list);
+void list_mesh_del_node(gills_context_t *gills,
+                        list_t **llist, list_t **list, list_t *list_node);
+void list_mesh_add(gills_context_t *gills,
+                   list_t **llist, list_t **list,
+                   void *data, list_t **lnode);
 int read_parse(gills_context_t *gills,
                token_read_t *tkread, int tokens_num,
                char **tkleft_assoc, int tkleftassoc_num,

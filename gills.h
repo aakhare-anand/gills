@@ -30,9 +30,10 @@
 #define MAKE_SCAN_FUNC_IDX 1
 #define SCAN_FUNCS_MAX_DEF_NUM 2
 
-#define REDUCE_ACTION_INLINE 1
-#define TOKEN_MEM_INTERNAL   1
-#define GILLS_FAST           1
+#define GILLS_MEM_TKSTACK_UNLIM  1
+#undef REDUCE_ACTION_INLINE
+#define TOKEN_MEM_INTERNAL        1
+#undef GILLS_FAST
 
 #define LAST_TOKEN_DEF_NUM        EOF
 #define EMPTY_TOKEN_DEF_NUM       1
@@ -145,11 +146,16 @@ typedef struct parse_node_ {
     rule_t *rule;
     int nonterm;
     list_t *tkstack_lnode;
+#ifndef GILLS_MEM_TKSTACK_UNLIM
     int tkstackidx;
+#else
+    list_t *tkstack_llnode;
+#endif
     int recur;
     int crecur;
     int right_recur;
     int int_recur;
+    int floating;
     int right_recur_end;
     int recurup;
     int uprecur;
@@ -227,7 +233,12 @@ typedef struct gills_context_ {
 //    int pstackidx_top;
     int pstackidx_max_num;
     list_t **tkstack;
+    list_t *tkstack_listmesh;
+    int prevop_tkstack_list_res;
+    list_t *prevop_tkstack_listmesh_list;
+    list_t *nextop_tkstack_listmesh_list;
     list_t *prevop_tkstack_lnode;
+    list_t *prevop_tkstack_llnode;
     int prevop_tkstack_update;
     int tkstack_idx;
     int tkstack_max_num;
