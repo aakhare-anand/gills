@@ -30,7 +30,7 @@
 #define MAKE_SCAN_FUNC_IDX 1
 #define SCAN_FUNCS_MAX_DEF_NUM 2
 
-#define GILLS_MEM_TKSTACK_UNLIM  1
+#undef GILLS_MEM_TKSTACK_UNLIM
 #undef REDUCE_ACTION_INLINE
 #define TOKEN_MEM_INTERNAL        1
 #undef GILLS_FAST
@@ -239,6 +239,9 @@ typedef struct gills_context_ {
     list_t *nextop_tkstack_listmesh_list;
     list_t *prevop_tkstack_lnode;
     list_t *prevop_tkstack_llnode;
+    list_t *prevact_tkstack_list;
+    list_t *prevact_tkstack_llist;
+    int prevact_tkstack_idx;
     int prevop_tkstack_update;
     int tkstack_idx;
     int tkstack_max_num;
@@ -268,6 +271,7 @@ typedef struct gills_context_ {
     int pnodeptrs_end;
  //   void *yyscan;
     void* yylval;
+    int action;
 } gills_context_t;
 
 typedef void* yystype;
