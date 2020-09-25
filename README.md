@@ -7,8 +7,8 @@ cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c
 
 cc is C compiler.
 
-Create a file named "data" and populate it with arithmetric expression for calculator.
-eg is 1+2-3*4/5*6
+Create a file named "data" and populate it with arithmetic expression for calculator.
+eg is 1+2-3\*4/5\*6
 Don't leave any whitespace characters.
 Then just run ./gills 
 It will read data file and parse it and exit.
