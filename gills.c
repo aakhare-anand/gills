@@ -600,7 +600,7 @@ void free_pnode (gills_context_t *gills, parse_node_t *pnode)
 #ifndef GILLS_MEM_TKSTACK_UNLIM
         gills->tkstack[pnode->tkstackidx] = list_del_node(gills, gills->tkstack[pnode->tkstackidx], pnode->tkstack_lnode);
 #else
-        list_mesh_del_node(gills, &gills->tkstack_listmesh, &pnode->tkstack_llnode,
+        list_mesh_del_node(gills, &gills->tkstack_listmesh, pnode->tkstack_llmeshnode, &pnode->tkstack_llnode,
                            pnode->tkstack_lnode);
 /*
         if (pnode->tkstack_llnode && gills->prevop_tkstack_lnode) {
@@ -780,7 +780,7 @@ void free_list (list_t *list)
 
 void list_mesh_add (gills_context_t *gills,
                     list_t **llist, list_t **list,
-                    void *data, list_t **lnode)
+                    void *data, list_t **llnode, list_t **lnode)
 {
     list_t *listptr = *list, *llistptr = *llist;
 
@@ -789,20 +789,21 @@ void list_mesh_add (gills_context_t *gills,
  //       *list = listptr;
  //   if (!llistptr) {
       if (!*list) {
-        llistptr = list_add(gills, llistptr, listptr, NULL);
+        llistptr = list_add(gills, llistptr, listptr, llnode);
         *llist = llistptr;
     }
     *list = listptr;
 }
 
 void list_mesh_del_node (gills_context_t *gills,
-                         list_t **llist, list_t **list, list_t *list_node)
+                         list_t **llist, list_t *llist_node, list_t **list,
+                         list_t *list_node)
 {
     list_t *listptr = *list, *llistptr = *llist;
 
     if ((listptr->next == list_node) &&
         (listptr->prev == list_node)) {
-        llistptr = list_del_node(gills, llistptr, listptr);
+        llistptr = list_del_node(gills, llistptr, llist_node);
         if (!llistptr)
             *llist = NULL;
     }
@@ -1379,8 +1380,11 @@ upreducelabel:
 #else
             list_mesh_add(gills, &gills->tkstack_listmesh,
                           &gills->nextop_tkstack_listmesh_list,
-                          (void *)toplastexptk, &toplastexptk->tkstack_lnode);
+                          (void *)toplastexptk,
+                           &gills->nextop_tkstack_listmesh_llist,
+                           &toplastexptk->tkstack_lnode);
             toplastexptk->tkstack_llnode = gills->nextop_tkstack_listmesh_list;
+            toplastexptk->tkstack_llmeshnode = gills->nextop_tkstack_listmesh_llist;
 #endif
                 toplastexptk->lasttk_toppnode = uppnode;
                 toplastexptk->lasttktotoprule_pnode = fpnode;
@@ -1577,8 +1581,12 @@ pnoderuleslabel:
 #else
             list_mesh_add(gills, &gills->tkstack_listmesh,
                           &gills->nextop_tkstack_listmesh_list,
-                          (void *)pnode, &pnode->tkstack_lnode);
+                          (void *)pnode,
+                           &gills->nextop_tkstack_listmesh_llist,
+ //                          &pnode->tkstack_llmeshnode,
+                           &pnode->tkstack_lnode);
             pnode->tkstack_llnode = gills->nextop_tkstack_listmesh_list;
+            pnode->tkstack_llmeshnode = gills->nextop_tkstack_listmesh_llist;
 #endif
         }
         if (retpnode)
@@ -1706,8 +1714,12 @@ pnoderuleslabel:
 #else
             list_mesh_add(gills, &gills->tkstack_listmesh,
                           &gills->nextop_tkstack_listmesh_list,
-                          (void *)rpnode, &rpnode->tkstack_lnode);
+                          (void *)rpnode,
+ //                         &rpnode->tkstack_llmeshnode,
+                           &gills->nextop_tkstack_listmesh_llist,
+                          &rpnode->tkstack_lnode);
             rpnode->tkstack_llnode = gills->nextop_tkstack_listmesh_list;
+            rpnode->tkstack_llmeshnode = gills->nextop_tkstack_listmesh_llist;
 #endif
            
         }
@@ -2151,7 +2163,15 @@ void action_ex_inline (gills_context_t *gills,
         tkpnode->lasttk_toppnode->top_lasttk_pnode_list =
             list_del_node(gills, toplasttklist, tkpnode->toplist_lnode);
         pnode = tkpnode->lasttktotoprule_pnode;
-        free_pnode(gills, tkpnode);
+        if ((!pnode || !pnode->token) &&
+            tkpnode->lasttk_toppnode->topres &&
+            !tkpnode->lasttk_toppnode->dn &&
+            !tkpnode->lasttk_toppnode->dnres_pnode) {
+            free_pnode(gills, gills->toppnode);
+            free_pnode(gills, tkpnode);
+            return;
+       }
+ //       free_pnode(gills, tkpnode);
         lasttk_pass = 1;
 //        return;
     }
@@ -5357,7 +5377,7 @@ reparsenontklabel:
                             gills->action = 1;
                             action_ex_inline(gills, pnode, NULL);
                             gills->action = 0;
-                            free_pnode(gills, gills->toppnode);
+ //                           free_pnode(gills, gills->toppnode);
  //                       }
 #endif
 
