@@ -8,10 +8,22 @@ cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c
 cc is C compiler.
 
 Create a file named "data" and populate it with arithmetic expression for calculator.
+
 eg is 1+2-3\*4/5\*6
+
 Don't leave any whitespace characters.
 Then just run ./gills 
 It will read data file and parse it and exit.
+With Makefile, test can be run by just building target with -
+
+make
+
+make testrun
+
+testrun target runs 4 tests of combination of with and without action inline alongwith
+with and without memory no limit.
+
+
 gills.[ch], gillsfileop.[ch] are used for parsing and testdata and testtokens and test
 can be replaced with application files.
 gills_app.h file has to be populated with data type of yylval of tokens given by scanners.
