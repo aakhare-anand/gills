@@ -104,14 +104,11 @@ Scanning files are simplex.c and simplex.h which is simple scanner implemented (
 Sample calculator and some combinations of parsing logic are provided for token_read_t as tkr arrays in tokendata.c file.
 One can be kept and rest can be commented out to validate logic.
 Depending on which tkr is active, respective input data file has to be created as text file with name "data". 
+
 About gills.[ch] code:
     Initial commit is for check-in and keeping track of all code flows. In further commits code cleanup will be done
 
 
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ECBL36DWZFTYW)
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="ECBL36DWZFTYW">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
-</form>
+
