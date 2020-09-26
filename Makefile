@@ -14,16 +14,16 @@ ${LIBGILLS}: gills.c gills.h gillsfileop.c gillsfileop.h gills_internal.h
 	${CC} -fPIC -shared -o libgills.so gills.c gillsfileop.c
 
 test_woinl_womemunl : ${SRCS}
-	${CC}  -o test_woinl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+	${CC}  -o gills_woinl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
 
 test_inl_womemunl :
-	${CC} --define REDUCE_ACTION_INLINE=1  -o test_inl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+	${CC} --define REDUCE_ACTION_INLINE=1  -o gills_inl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
 
 test_woinl_memunl:
-	${CC} --define GILLS_MEM_TKSTACK_UNLIM=1  -o test_woinl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+	${CC} --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_woinl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
 
 test_inl_memunl:
-	${CC} --define REDUCE_ACTION_INLINE=1 --define GILLS_MEM_TKSTACK_UNLIM=1  -o test_inl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+	${CC} --define REDUCE_ACTION_INLINE=1 --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_inl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
 
 .PHONY: testrun
 
