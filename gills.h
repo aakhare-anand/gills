@@ -31,7 +31,7 @@
 #define SCAN_FUNCS_MAX_DEF_NUM 2
 
 #undef GILLS_MEM_TKSTACK_UNLIM
-#define REDUCE_ACTION_INLINE      1
+// #define REDUCE_ACTION_INLINE      1
 #define TOKEN_MEM_INTERNAL        1
 #undef GILLS_FAST
 
@@ -39,7 +39,6 @@
 #define EMPTY_TOKEN_DEF_NUM       1
 #define EMPTY_TOKEN_DEF_NAME      "%empty"
 
-struct gills_context_;
 typedef void * yyscan_t;
 typedef int (*scan_func_t)(void *, yyscan_t);
 
@@ -53,11 +52,47 @@ typedef union GILLSYYSTYPE_ {
     char str[8];
 } GILLSYYSTYPE;
 
+struct gills_context_;
+
 typedef struct list_ {
     void *data;
     struct list_ *next;
     struct list_ *prev;
 } list_t;
+
+#define SEG_LNODE_SIZE    (sizeof(list_t *))
+
+struct mem_segment_;
+
+typedef struct mem_pool_ {
+    int node_size;
+    int nodes_num;
+    int nodes_max_num;
+    int seg_size;
+    int segments_num;
+    int segments_max_num;
+    list_t *segments_list;
+    int nodes_in_use_num;
+    int nodes_free_num;
+    struct mem_segment_ *last_used_segment;
+    list_t *last_used_segment_lnode;
+} mem_pool_t;
+
+typedef struct mem_segment_ {
+    void *mem;
+    int mem_idx;
+    void **nodes_ptrs;
+    int nodesptrs_start;
+    int nodesptrs_end;
+    int nodes_in_use_num;
+    int nodes_free_num;
+    list_t *seglist_lnode;
+} mem_segment_t;
+
+typedef struct mem_node_ {
+    int segment_num;
+    void *pointer;
+} mem_node_t;
 
 typedef void (*rule_action_t)(struct gills_context_ *);
 

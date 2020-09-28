@@ -19,6 +19,7 @@ int main ()
     gills_fread_t *gf;
     char *datafile = "data";
     struct timespec timespecstart, timespecend;
+    int secdiff, nsecdiff;
 
 //    gf = gills_fileropen(datafile, GILLS_FREAD_BUF_DEF_SIZE, GILLS_FREAD_MIN_DEF_SIZE);
     gf = gills_fileropen(datafile, 64, 8);
@@ -79,8 +80,15 @@ int main ()
     }
     printf("\nstart timespec : %d %d \n", timespecstart.tv_sec, timespecstart.tv_nsec);
     printf("end timespec : %d %d \n", timespecend.tv_sec, timespecend.tv_nsec);
-    printf("diff : %d sec %d nsec\n", timespecend.tv_sec - timespecstart.tv_sec,
-            timespecend.tv_nsec - timespecstart.tv_nsec);
+    if (timespecend.tv_nsec >= timespecstart.tv_nsec) {
+        nsecdiff = timespecend.tv_nsec - timespecstart.tv_nsec;
+    } else {
+        nsecdiff = 1000000000 + timespecend.tv_nsec - timespecstart.tv_nsec;
+        timespecend.tv_sec -= 1;
+    }
+    secdiff = timespecend.tv_sec - timespecstart.tv_sec;
+    printf("diff : %d sec %d nsec\n", secdiff, nsecdiff /* timespecend.tv_sec - timespecstart.tv_sec,
+            timespecend.tv_nsec - timespecstart.tv_nsec */ );
     simplex_cleanup(simplex);
     gills_frclose(gf);
     gills_cleanup(gills);

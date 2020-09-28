@@ -49,17 +49,7 @@ void free_parse_recpnode(gills_context_t *gills,
 void free_parse_nodes(gills_context_t *gills,
                        parse_node_t *tkpnode);
 int reduce_parse(gills_context_t *gills, parse_node_t *tkpnode);
-/*
-void mem_pool_alloc (gills_context_t *gills, list_t **pool_list,
-                int segment_size)
-{
-    list_t *listnode = *pool_list, *retlistnode;
 
-    memsegment = (void 
-    listnode = list_add(listnode, memsegment, &retlistnode);
-
-    
-*/
 int assign_assoc_prec (gills_context_t *gills,
                        char **right, int right_num,
                        char **left, int left_num,
