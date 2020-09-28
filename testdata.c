@@ -115,8 +115,25 @@ token_read_t parse_data4[9] = {
 };
 */
 /*
-int parse_tokens_num5 = 12;
-token_read_t parse_data5[12] = {
+int parse_tokens_num = 11;
+token_read_t parse_data[11] = {
+    { "input", 0, 0, 0, { 1, { 2 }, { 0 }, { 0 }, { fin },
+       { "expr", "word", "\0" } } },
+    { "expr", 7, 0, 0, { 5, { 1, 3, 3, 3, 3 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { f0, f, f, f, f },
+       { { "NUM", "\0" }, { "expr", "PLUS", "expr", "\0" }, { "expr", "MINUS", "expr", "\0" },{ "expr", "MULTI", "expr", "\0" },{ "expr", "DIV", "expr", "\0" } } } },
+    { "NUM", 2, 0, 0, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "PLUS", 3, RIGHT_ASSOC, 2, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "MINUS", 4, RIGHT_ASSOC, 1, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "MULTI", 5, LEFT_ASSOC, 4, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "DIV", 6, LEFT_ASSOC, 3, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "word", 8, 0, 0, { 1, { 2 }, { 0 }, { 0 }, { funword }, { { "WORD0", "WORD1", "\0" } } } },
+    { "WORD0", 9, 0, 0, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+    { "WORD1", 10, 0, 0, { 0, { 0 }, { 0 }, { 0 }, { NULL }, { "\0" } } },
+};
+*/
+/*
+int parse_tokens_num = 12;
+token_read_t parse_data[12] = {
     { "input", 0, 0, 0, { 1, { 2 }, { 0 }, { 0 }, { fin },
        { "expr", "word", "\0" } } },
     { "expr", 7, 0, 0, { 5, { 1, 3, 3, 3, 3 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { f0, f, f, f, f },

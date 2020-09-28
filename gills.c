@@ -390,6 +390,9 @@ int read_parse (gills_context_t *gills,
 
 parse_node_t* get_pnode (gills_context_t *gills)
 {
+    return mem_pool_get_node(gills, gills->pnodemem);
+
+#if 0
     parse_node_t *pnode;
 
     if (gills->pnodemem_idx != gills->pnode_max_num) {
@@ -410,6 +413,7 @@ parse_node_t* get_pnode (gills_context_t *gills)
 //        return NULL;
 //#endif
     }
+#endif
 }
 
 #if 0
@@ -625,16 +629,19 @@ void free_pnode (gills_context_t *gills, parse_node_t *pnode)
                             }
                         }
 */
+    mem_pool_node_free(gills, gills->pnodemem, (void *)pnode);
+#if 0
     gills->pnodeptrs[gills->pnodeptrs_end] = pnode;
     memset(pnode, 0, sizeof(parse_node_t)); 
     gills->pnodeptrs_end += 1;
+#endif
 #endif
 }
 
 void reset_pnode_mem (gills_context_t *gills)
 {
-    gills->pnodemem_idx = 0;
-    gills->pnodeptrs_start = gills->pnodeptrs_end = 0;
+ //   gills->pnodemem_idx = 0;
+ //   gills->pnodeptrs_start = gills->pnodeptrs_end = 0;
 }
 
 list_t* list_create (gills_context_t *gills)
@@ -817,7 +824,8 @@ gills_context_t* gills_create_def (void *yylval, void *yyscan)
     gills->tkstack_max_num = TKSTACK_MAX_DEF_NUM;
     gills->listnodearr_max_num = LIST_NODES_DEF_NUM;
     gills->scan_funcs_max_num = SCAN_FUNCS_MAX_DEF_NUM;
-    gills->pnode_max_num = PNODE_DEF_NUM;
+    gills->pnodemem_nodes_max_num = PNODEMEM_NODES_MAX_DEF_NUM;
+    gills->pnodemem_segs_max_num = PNODEMEM_SEGS_MAX_DEF_NUM;
 }
 
 void init_gills_params (gills_context_t *gills,
@@ -826,7 +834,8 @@ void init_gills_params (gills_context_t *gills,
                        int init_tkstack_max_num,
                        int init_listnodearr_max_num,
                        int init_scan_funcs_max_num,
-                       int init_pnode_max_num,
+                       int init_pnodemem_nodes_max_num,
+                       int init_pnodemem_segs_max_num,
                        int init_action_params_max_num,
                        int init_last_tk_num)
 {
@@ -835,7 +844,8 @@ void init_gills_params (gills_context_t *gills,
     gills->tkstack_max_num = init_tkstack_max_num;
     gills->listnodearr_max_num = init_listnodearr_max_num;
     gills->scan_funcs_max_num = init_scan_funcs_max_num;
-    gills->pnode_max_num = init_pnode_max_num;
+    gills->pnodemem_nodes_max_num = init_pnodemem_nodes_max_num;
+    gills->pnodemem_segs_max_num = init_pnodemem_segs_max_num;
     gills->action_params_max_num = init_action_params_max_num;
     gills->last_tk_num = init_last_tk_num;
 }
@@ -853,14 +863,14 @@ int init_gills_alloc (gills_context_t *gills)
     gills->listnodearr_idx = 0;
     gills->scan_funcs_max_idx = -1;
     gills->scan_active_idx = 0;
-    gills->pnodemem_idx = 0;
-    gills->pnodeptrs_start = 0;
-    gills->pnodeptrs_end = 0;
+ //   gills->pnodemem_idx = 0;
+ //   gills->pnodeptrs_start = 0;
+ //   gills->pnodeptrs_end = 0;
     gills->listnodearr = (list_t *)calloc(gills->listnodearr_max_num, sizeof(list_t));
     gills->pstack = (parse_node_t **)calloc(gills->pstack_max_num, sizeof(parse_node_t *));
 //    gills->pnodemem = (parse_node_t *)calloc(gills->pnode_max_num, sizeof(parse_node_t));
 //    gills->listnodearr = (list_t *)calloc(gills->listnodearr_max_num, sizeof(list_t));
-    gills->pnodeptrs = (parse_node_t **)calloc(gills->pnode_max_num, sizeof(parse_node_t *));
+ //   gills->pnodeptrs = (parse_node_t **)calloc(gills->pnode_max_num, sizeof(parse_node_t *));
 //    gills->pstack = (parse_node_t **)calloc(gills->pstack_max_num, sizeof(parse_node_t *));
 //    gills->pstackidx_stack = (int *)calloc(gills->pnode_max_num, sizeof(int));
 #ifndef GILLS_MEM_TKSTACK_UNLIM
@@ -881,7 +891,17 @@ int init_gills_alloc (gills_context_t *gills)
                                        sizeof(void *));
     gills->scan_val_size = (int *)calloc(gills->scan_funcs_max_num,
                                        sizeof(int));
-    gills->pnodemem = (parse_node_t *)calloc(gills->pnode_max_num, sizeof(parse_node_t));
+ //   gills->pnodemem = (parse_node_t *)calloc(gills->pnode_max_num, sizeof(parse_node_t));
+
+    gills->pnodemem = mem_pool_alloc(gills,
+                                     sizeof(parse_node_t),
+                                     gills->pnodemem_nodes_max_num,
+                                     gills->pnodemem_segs_max_num);
+   if (!gills->pnodemem) {
+       printf("mem_pool_alloc failed\n");
+       return -1;
+   }
+
     return 0;
 }
 
@@ -899,7 +919,7 @@ void gills_cleanup (gills_context_t *gills)
 {
 //    free(gills->pnodemem);
 //    free(gills->listnodearr);
-    free(gills->pnodeptrs);
+ //   free(gills->pnodeptrs);
     free(gills->pstack);
 //    free(gills->pstackidx_stack);
 #ifndef GILLS_MEM_TKSTACK_UNLIM
@@ -908,7 +928,8 @@ void gills_cleanup (gills_context_t *gills)
     free(gills->scan_funcs);
     free(gills->scan_funcs_val);
     free(gills->scan_val_size);
-    free(gills->pnodemem);
+ //   free(gills->pnodemem);
+    mem_pool_free(gills, gills->pnodemem);
     free(gills->listnodearr);
     free(gills);
 }
@@ -963,7 +984,7 @@ void exit_parse (gills_context_t *gills, int exit_ret)
     gills->prevop_tkstack_update = 0;
     if (gills->toppnode)
         free_parse_nodes(gills, gills->toppnode);
-    printf("pnodemem_idx %d\npnodeptrs_end %d \n", gills->pnodemem_idx, gills->pnodeptrs_end);
+    printf("pnodemem_free %d\npnodemem_in_use %d \n", gills->pnodemem->nodes_free_num, gills->pnodemem->nodes_in_use_num);
     gills_cleanup(gills);
     exit(exit_ret);
 }
@@ -2392,9 +2413,9 @@ action_loop_start:
                      free_parse_rule(gills, rlpnode);
                      pnode->dnres_pnode = NULL;
                      if (pnode == gills->toppnode) {
-#ifdef REDUCE_ACTION_INLINE
-                         return;
-#else
+// #ifdef REDUCE_ACTION_INLINE
+ //                        return;
+// #else
                          toplasttklist = pnode->top_lasttk_pnode_list;
                          while (toplasttklist) {
                              toplasttklist = toplasttklist->next;
@@ -2409,7 +2430,7 @@ action_loop_start:
                          free_pnode(gills, gills->toppnode);
                          gills->toppnode = NULL;
                          return;
-#endif
+//#endif
                      }
 /*
                      if (crecur_begin_pnode) {
@@ -5697,9 +5718,9 @@ check_reparse:
  //       gills->topres = 0;
         gills->toppnode = NULL;
         gills->tkstack_idx = 0;
-        gills->pnodemem_idx = 0;
-        gills->pnodeptrs_start = 0;
-        gills->pnodeptrs_end = 0;
+ //       gills->pnodemem_idx = 0;
+ //       gills->pnodeptrs_start = 0;
+ //       gills->pnodeptrs_end = 0;
         goto reparse_genlabel;
     }
 

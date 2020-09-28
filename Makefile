@@ -1,8 +1,10 @@
 CC= gcc 
 
 HEADER_FILES= gills_app.h gills_extern.h gillsfileop.h gills.h gills_internal.h simplex.h testdata.h testtokens.h
-SRCS= gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c ${HEADER_FILES}
-OBJS= gillsfileop.o gills.o simplex.o testdata.o test.o testtokens.o
+SRC_FILES= gillsfileop.c mempool.c gills.c simplex.c testdata.c test.c testtokens.c
+SRCS= ${HEADER_FILES} ${SRC_FILES}
+
+OBJS= gillsfileop.o mempool.o gills.o simplex.o testdata.o test.o testtokens.o
 
 LIBGILLS= libgills.so 
 
@@ -16,16 +18,16 @@ ${LIBGILLS}: gills.c gills.h gillsfileop.c gillsfileop.h gills_internal.h
 	${CC} -c gillsfileop.c
 
 gills_woinl_womemunl : ${SRCS}
-	${CC}  -o gills_woinl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+	${CC}  -o gills_woinl_womemunl ${SRC_FILES}
 
-gills_inl_womemunl :
-	${CC} --define REDUCE_ACTION_INLINE=1  -o gills_inl_womemunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+gills_inl_womemunl : ${SRC_FILES}
+	${CC} --define REDUCE_ACTION_INLINE=1  -o gills_inl_womemunl ${SRC_FILES}
 
-gills_woinl_memunl:
-	${CC} --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_woinl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+gills_woinl_memunl: ${SRCS}
+	${CC} --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_woinl_memunl ${SRC_FILES}
 
-gills_inl_memunl:
-	${CC} --define REDUCE_ACTION_INLINE=1 --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_inl_memunl gillsfileop.c gills.c simplex.c testdata.c test.c testtokens.c
+gills_inl_memunl: ${SRCS}
+	${CC} --define REDUCE_ACTION_INLINE=1 --define GILLS_MEM_TKSTACK_UNLIM=1  -o gills_inl_memunl ${SRC_FILES}
 
 .PHONY: testrun
 
@@ -56,5 +58,5 @@ testrun:
 	@read
 
 clean:
-	rm ${LIBGILLS} ${TESTS}
+	rm -f ${LIBGILLS} ${TESTS}
 

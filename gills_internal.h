@@ -22,5 +22,6 @@ mem_pool_t* mem_pool_alloc(gills_context_t *gills,int node_size, int nodes_num,
 void* mem_pool_get_node(gills_context_t *gills, mem_pool_t *mempool);
 void mem_pool_node_free(gills_context_t *gills,
                      mem_pool_t *mempool, void *node);
+void mem_pool_free(gills_context_t *gills, mem_pool_t *mempool);
 
 #endif    /* __GILLS_INTERNAL_H__ */

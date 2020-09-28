@@ -8,7 +8,8 @@ void init_gills_params(gills_context_t *gills,
                        int init_tkstack_max_num,
                        int init_listnodearr_max_num,
                        int init_scan_funcs_max_num,
-                       int init_pnode_max_num,
+                       int init_pnodemem_nodes_max_num,
+                       int init_pnodemem_segs_max_num,
                        int init_action_params_max_num,
                        int init_last_tk_num);
 int init_gills_alloc(gills_context_t *gills);

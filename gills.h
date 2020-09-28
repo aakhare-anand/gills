@@ -18,7 +18,8 @@
 
 #define TOP_TREE_REACHED         1
 
-#define PNODE_DEF_NUM            10000
+#define PNODEMEM_NODES_MAX_DEF_NUM   10000
+#define PNODEMEM_SEGS_MAX_DEF_NUM    2
 #define LIST_NODES_DEF_NUM       10000
 #define PSTACK_MAX_DEF_NUM       10000
 #define TKSTACK_MAX_DEF_NUM      1000
@@ -30,8 +31,8 @@
 #define MAKE_SCAN_FUNC_IDX 1
 #define SCAN_FUNCS_MAX_DEF_NUM 2
 
-#undef GILLS_MEM_TKSTACK_UNLIM
-// #define REDUCE_ACTION_INLINE      1
+//#undef GILLS_MEM_TKSTACK_UNLIM
+//#define REDUCE_ACTION_INLINE      1
 #define TOKEN_MEM_INTERNAL        1
 #undef GILLS_FAST
 
@@ -300,12 +301,14 @@ typedef struct gills_context_ {
     yyscan_t *yyscan;
     void **act_val;
     int action_params_max_num;
-    parse_node_t *pnodemem;
-    int pnodemem_idx;
-    parse_node_t **pnodeptrs;
-    int pnode_max_num;
-    int pnodeptrs_start;
-    int pnodeptrs_end;
+ //   parse_node_t *pnodemem;
+    mem_pool_t *pnodemem;
+ //   int pnodemem_idx;
+ //   parse_node_t **pnodeptrs;
+    int pnodemem_nodes_max_num;
+    int pnodemem_segs_max_num;
+ //   int pnodeptrs_start;
+ //   int pnodeptrs_end;
  //   void *yyscan;
     void* yylval;
     int action;

@@ -68,7 +68,8 @@ int main ()
         exit(-1);
     }
     ret = parse(gills, gills->top_token);
-    printf("pnodemem_idx %d\npnodeptrs_end %d \n", gills->pnodemem_idx, gills->pnodeptrs_end);
+ //   printf("pnodemem_idx %d\npnodeptrs_end %d \n", gills->pnodemem_idx, gills->pnodeptrs_end);
+    printf("pnodemem_free %d\npnodemem_in_use %d \n", gills->pnodemem->nodes_free_num, gills->pnodemem->nodes_in_use_num);
     if (ret) {
         printf("parse failed ...exiting\n");
         exit_parse(gills, -1);
