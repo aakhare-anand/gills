@@ -1012,7 +1012,7 @@ int generate_parse (gills_context_t *gills,
 {
     token_node_t *tnode = starttoken, *rnode;
     parse_node_t *pnode, *uppnode, *lretpnode, *rpnode, *grpnode, *recpnode, *crecpnode, *recuruppnode, *crecuruppnode, *fpnode, *fpnode1, *recnxtpnode, *uprecpnode, *recuppnode, *toplastexptk, *recupfl_pnode;
-    int rnum = 0, upflag = 0, updir = 0, toprecur;
+    int rnum = 0, upflag = 0, updir = 0, toprecur, pstackidx_start = gills->pstack_idx;
     rule_t *rules, *rule;
     rule_node_t *rlnode, *nxtrlnode = NULL;
     list_t *lnode, *up_recur_list, *up_precur_list, *reclist, *reclist1, *parselistnode, *listnode;
@@ -1760,7 +1760,8 @@ pnoderuleslabel:
         if (gills->pstack_idx ==
             gills->pstackidx_stack[gills->pstackidx_top])
 */
-        if (gills->pstack_idx == -1)
+ //       if (gills->pstack_idx == -1)
+          if (gills->pstack_idx == pstackidx_start)
             break;
      }
 crecurgenlabel:
@@ -2434,9 +2435,9 @@ action_loop_start:
                      pnode->dnres_pnode = NULL;
  //                    if ((pnode == gills->toppnode) && pnode->res) {
                      if (pnode == gills->toppnode) {
-#ifdef REDUCE_ACTION_INLINE
-                         return;
-#else
+// #ifdef REDUCE_ACTION_INLINE
+ //                        return;
+// #else
                          toplasttklist = pnode->top_lasttk_pnode_list;
                          while (toplasttklist) {
                              toplasttklist = toplasttklist->next;
@@ -2455,7 +2456,7 @@ action_loop_start:
                          gills->toppnode = NULL;
  //                        }
                          return;
-#endif
+//#endif
                      }
 /*
                      if (crecur_begin_pnode) {
