@@ -523,7 +523,7 @@ void free_pnode (gills_context_t *gills, parse_node_t *pnode)
         if (gills->prevop_tkstack_lnode) {
             if (gills->prevop_tkstack_lnode == pnode->tkstack_lnode) {
                 gills->prevop_tkstack_lnode = pnode->tkstack_lnode->next;
-                if (!gills->prevop_tkstack_lnode->data) {
+ //               if (!gills->prevop_tkstack_lnode->data) {
                     if (gills->prevop_tkstack_lnode->next->next ==
                         gills->prevop_tkstack_lnode) {
 #ifndef GILLS_MEM_TKSTACK_UNLIM
@@ -531,8 +531,20 @@ void free_pnode (gills_context_t *gills, parse_node_t *pnode)
 #else
                         gills->prevop_tkstack_listmesh_list = NULL;
 #endif
-                    }
-                    gills->prevop_tkstack_lnode = NULL;
+ //                   }
+ //                   gills->prevop_tkstack_lnode = NULL;
+/*
+                      gills->prevop_tkstack_lnode = 
+                      (pnode->tkstack_llmeshnode->next->next !=
+                       pnode->tkstack_llmeshnode) ?
+                       ((list_t *)(pnode->tkstack_llmeshnode->next->data))->next :
+                       NULL;
+                       if (gills->prevop_tkstack_lnode) {
+                           gills->prevop_tkstack_listmesh_list = (list_t *)(pnode->tkstack_llmeshnode->next->data);
+                      } else {
+                           gills->prevop_tkstack_listmesh_list = NULL;
+                      }
+*/
                 }
                 gills->prevop_tkstack_update = 1;
             }
@@ -1732,6 +1744,14 @@ pnoderuleslabel:
             rpnode->tkstack_llnode = gills->nextop_tkstack_listmesh_list;
             rpnode->tkstack_llmeshnode = gills->nextop_tkstack_listmesh_llist;
 #endif
+            if (rpnode->token->token_num == gills->empty_tk_num) {
+            rpnode->res = 1;
+            ret = reduce_parse(gills, rpnode);
+            if (ret) {
+                printf("error ...exiting\n");
+                exit_parse(gills, -1);
+            }
+            }
            
         }
         }
@@ -2412,25 +2432,30 @@ action_loop_start:
                      pnode = rlpnode->up;
                      free_parse_rule(gills, rlpnode);
                      pnode->dnres_pnode = NULL;
+ //                    if ((pnode == gills->toppnode) && pnode->res) {
                      if (pnode == gills->toppnode) {
-// #ifdef REDUCE_ACTION_INLINE
- //                        return;
-// #else
+#ifdef REDUCE_ACTION_INLINE
+                         return;
+#else
                          toplasttklist = pnode->top_lasttk_pnode_list;
                          while (toplasttklist) {
                              toplasttklist = toplasttklist->next;
                              toplasttkpnode = (parse_node_t *)(toplasttklist->data);
-                             free_pnode(gills, toplasttkpnode);
+ //                            if (toplasttkpnode->res) {
+                                 free_pnode(gills, toplasttkpnode);
                              toplasttklist->data = NULL;
+ //                            }
                              if (toplasttklist->next ==
                                  pnode->top_lasttk_pnode_list)
                              break;
                          }
-                         free_list(pnode->top_lasttk_pnode_list); 
+ //                        if (!pnode->top_lasttk_pnode_list) {
+                             free_list(pnode->top_lasttk_pnode_list); 
                          free_pnode(gills, gills->toppnode);
                          gills->toppnode = NULL;
+ //                        }
                          return;
-//#endif
+#endif
                      }
 /*
                      if (crecur_begin_pnode) {
@@ -4903,7 +4928,7 @@ int reduce_parse (gills_context_t *gills, parse_node_t *tkpnode)
 
 int parse (gills_context_t *gills, token_node_t *starttoken)
 {
-    int tk, tkread = 0, ret, ambiguity, top_reached, i, nonempty_tkcount, loop;
+    int tk, tkread = 0, ret, ambiguity, top_reached, i, nonempty_tkcount, loop, prevop_res;
     parse_node_t *pnode, *tkpnode, *tkuppnode, *ltoppnode, *retpnode, *listpnode, *crecpnode, *crecuppnode;
     token_node_t *tknode;
     list_t *tklist, *tknelist, *listnode, *prevlistnode, *toplasttk_list, *listmesh_node, *nextop_list;
@@ -4924,9 +4949,11 @@ reparse_genlabel:
     gills->retfree = 0;
     ret = generate_parse(gills, NULL, starttoken, NULL, 0, NULL, &retpnode, NULL);
 //    gills->tkstack_idx += 1;
+#if 0
 #ifdef GILLS_MEM_TKSTACK_UNLIM
     gills->prevop_tkstack_listmesh_list = gills->nextop_tkstack_listmesh_list;
     gills->nextop_tkstack_listmesh_list = NULL;
+#endif
 #endif
     gills->toppnode = retpnode;
     if (tkread) {
@@ -5000,6 +5027,7 @@ reparsenontklabel:
         i = 0;
     }
 */
+#if 0
     gills->prevop_tkstack_update = 0;
 #ifndef GILLS_MEM_TKSTACK_UNLIM
     tklist = gills->tkstack[gills->tkstack_idx];
@@ -5057,7 +5085,20 @@ reparsenontklabel:
            gills->prevop_tkstack_lnode = gills->prevop_tkstack_lnode->next;
        }
     }
+#endif
  //       gills->prevop_tkstack_lnode = NULL;
+
+#ifndef GILLS_MEM_TKSTACK_UNLIM
+ //   if (gills->tkstack_idx) {
+  //      gills->tkstack_idx += 1;
+ //   }
+#else
+ //   if (gills->tkstack_idx) {
+        gills->prevop_tkstack_listmesh_list = gills->nextop_tkstack_listmesh_list;
+        gills->nextop_tkstack_listmesh_list = NULL;
+ //   }
+ //   gills->tkstack_idx += 1;
+#endif
         gills->prevop_tkstack_update = 0;
 
 //             listnode = gills->tkstack[gills->tkstack_idx];
@@ -5108,7 +5149,7 @@ reparsenontklabel:
 */
             pnode = (parse_node_t *)(gills->prevop_tkstack_lnode->data);
 //            if (!gills->topreach) {
-                if (pnode->token->token_num == gills->empty_tk_num ||
+                if (( /* (tk != gills->last_tk_num) && */ (pnode->token->token_num == gills->empty_tk_num)) ||
                     pnode->token->token_num == tk) {
                     gills->prevop_tkstack_lnode = gills->prevop_tkstack_lnode->next;
                     continue;
@@ -5167,6 +5208,9 @@ reparsenontklabel:
            exit_parse(gills, -1);
        }
 
+    gills->tkstack_idx += 1;
+
+#if 0
 #ifndef GILLS_MEM_TKSTACK_UNLIM
     gills->tkstack_idx += 1;
 #else
@@ -5176,7 +5220,7 @@ reparsenontklabel:
     }
     gills->tkstack_idx += 1;
 #endif
-
+#endif
 #if 0
 #ifndef GILLS_MEM_TKSTACK_UNLIM
     gills->tkstack_idx += 1;
@@ -5234,7 +5278,8 @@ reparsenontklabel:
             break;
 #endif
         tkpnode = (parse_node_t *)(gills->prevop_tkstack_lnode->data);
-        if (tkpnode->token->token_num == tk) {
+        if ((tkpnode->token->token_num == tk)  &&
+             (tkpnode->token->token_num != gills->empty_tk_num)) {
            tkpnode->res = 1;
  //          if (gills->prevop_tkstack_lnode ==
  //              gills->prevop_tkstack_lnode->next->next)
@@ -5365,12 +5410,40 @@ reparsenontklabel:
     nextop_list = gills->nextop_tkstack_listmesh_list;
 #endif
 
+    prevop_res = 1;
+    pnode = NULL;
     if (gills->prevop_tkstack_lnode) {
-        if (gills->prevop_tkstack_lnode == 
-            gills->prevop_tkstack_lnode->next->next) {
+        listnode = gills->prevop_tkstack_lnode->next;
+#if 0
+#ifndef GILLS_MEM_TKSTACK_UNLIM
+        listnode = gills->tkstack[gills->tkstack_idx - 1];
+#else
+        listnode = gills->prevop_tkstack_listmesh_list ? 
+                   gills->prevop_tkstack_listmesh_list->next : NULL;
+#endif
+#endif
+        while (listnode && listnode != gills->prevop_tkstack_lnode) {
+            tkpnode = (parse_node_t *)(listnode->data);
+            if (tkpnode->token->token_num != gills->empty_tk_num) {
+                if (!pnode) {
+                    pnode = tkpnode;
+ //                   continue;
+                } else {
+                    prevop_res = 0;
+                    break;
+                }
+           }
+           listnode = listnode->next;
+        }
+
+ //       if (gills->prevop_tkstack_lnode == 
+ //           gills->prevop_tkstack_lnode->next->next) {
+          if (prevop_res) {
  //           tkpnode = (parse_node_t *)(gills->prevop_tkstack_lnode->next->data);
-              tkpnode = (parse_node_t *)(gills->prevop_tkstack_lnode->next->data);
-              pnode = (parse_node_t *)(gills->prevact_tkstack_list->next->data);
+ //             tkpnode = (parse_node_t *)(gills->prevop_tkstack_lnode->next->data);
+              tkpnode = pnode;
+              pnode = gills->prevact_tkstack_list ?
+                      (parse_node_t *)(gills->prevact_tkstack_list->next->data) : NULL;
             if (tkpnode->res) {
                 if (tkpnode->token->token_num == gills->last_tk_num) {
                     if (!nextop_list) {
