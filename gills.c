@@ -2435,6 +2435,7 @@ action_loop_start:
                      pnode->dnres_pnode = NULL;
  //                    if ((pnode == gills->toppnode) && pnode->res) {
                      if (pnode == gills->toppnode) {
+                          if (pnode->topres) {
 // #ifdef REDUCE_ACTION_INLINE
  //                        return;
 // #else
@@ -2457,6 +2458,9 @@ action_loop_start:
  //                        }
                          return;
 //#endif
+                         } else {
+                         return;
+                         }
                      }
 /*
                      if (crecur_begin_pnode) {
