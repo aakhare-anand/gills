@@ -3,7 +3,7 @@ Core component is gills.[ch] files which is to be linked with application as lib
 It's by default multi-threading enabled.
 To try it out, download all code in a directory and compile with following command:
 
-cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c
+cc -o gills gills.c simplex.c gillsfileop.c testtokens.c test.c testdata.c mempool.c
 
 cc is C compiler.
 
@@ -24,7 +24,7 @@ testrun target runs 4 tests of combination of with and without action inline alo
 with and without memory no limit.
 
 
-gills.[ch], gillsfileop.[ch] are used for parsing and testdata and testtokens and test
+gills.[ch], gillsfileop.[ch] are used for parsing. testdata.c, testtokens.c and test.c
 can be replaced with application files.
 gills_app.h file has to be populated with data type of yylval of tokens given by scanners.
 Parsing synax is populated through writing data structure token_read_t(Refer testdata.c file)
@@ -93,7 +93,7 @@ int get_token (gills_context_t *gills, int scan_idx)
 
 
 Maximum number of scanning functions and lot many parameters can be initialised in init_gills_params()
-
+Refer gills.h
 void init_gills_params (gills_context_t *gills,
                        int init_pstack_max_num,
                        int init_pstackidx_max_num,
@@ -120,7 +120,9 @@ Depending on which tkr is active, respective input data file has to be created a
 About gills.[ch] code:
     Initial commit is for check-in and keeping track of all code flows. In further commits code cleanup will be done
 
+If you like gills parser generator, give stars. If you want to donate/fund, please get in touch with github sponsor team mentioning gills repository.
 
-[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ECBL36DWZFTYW)
+Gills is name for fish organ to filter oxygen from water.
+![](https://raw.githubusercontent.com/aakhare-anand/gills/master/gills.jpg)
 
 
