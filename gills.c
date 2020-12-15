@@ -966,6 +966,9 @@ void init_composer_gills(gills_context_t *gills)
 
 void exit_parse (gills_context_t *gills, int exit_ret)
 {
+    gills_cleanup(gills);
+    exit(exit_ret);
+#if 0
     parse_node_t *listpnode;
     list_t *lnode, *llnode;
     int i;
@@ -999,6 +1002,7 @@ void exit_parse (gills_context_t *gills, int exit_ret)
     printf("pnodemem_free %d\npnodemem_in_use %d \n", gills->pnodemem->nodes_free_num, gills->pnodemem->nodes_in_use_num);
     gills_cleanup(gills);
     exit(exit_ret);
+#endif
 }
 
 int generate_parse (gills_context_t *gills,
