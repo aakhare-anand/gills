@@ -1,4 +1,13 @@
 Gills is GLR parser generator.
+With gills even with current code, it is possible to implement context free langauge (compilers/interpreter)
+Though gillsgen tool is not yet ready which could simplify translating language syntax to gills data structure.
+gillsgen tool being front end, it can be made compatible to any language syntax input file like yacc (.y) file.
+
+Development work is in progress and prototype is done.
+Gills is looking reviews and stars and if you find it interesting, pls fwd it in your circle.
+
+Below is writeup to how to use gills:
+
 Core component is gills.[ch] files which is to be linked with application as library.
 It's by default multi-threading enabled.
 To try it out, download all code in a directory and compile with following command:
