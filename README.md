@@ -6,7 +6,7 @@ gillsgen tool being front end, it can be made compatible to any language syntax 
 Development work is in progress and prototype is done.
 Gills is looking reviews and stars and if you find it interesting, pls fwd it in your circle.
 
-Below is writeup to how to use gills:
+Below is writeup to how to use gills. There is also introduction to parser generator and how gills differ from earlier approach of parser implementation in my linkedin article (https://www.linkedin.com/pulse/gills-new-approach-parser-generator-anand-akhare/):
 
 Core component is gills.[ch] files which is to be linked with application as library.
 It's by default multi-threading enabled.
