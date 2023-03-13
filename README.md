@@ -126,9 +126,6 @@ Sample calculator and some combinations of parsing logic are provided for token_
 One can be kept and rest can be commented out to validate logic.
 Depending on which tkr is active, respective input data file has to be created as text file with name "data". 
 
-About gills.[ch] code:
-    Initial commit is for check-in and keeping track of all code flows. In further commits code cleanup will be done
-
 If you like gills parser generator, give stars. If you want to donate/fund, please get in touch with github sponsor team mentioning gills repository.
 
 Gills is name for fish organ to filter oxygen from water.
